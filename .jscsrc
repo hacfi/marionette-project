@@ -1,0 +1,43 @@
+{
+  "requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch"],
+  "disallowKeywords": ["with", "eval"],
+  "requireParenthesesAroundIIFE": true,
+  "disallowSpacesInNamedFunctionExpression": {
+    "beforeOpeningRoundBrace": true
+  },
+  "requireSpacesInAnonymousFunctionExpression": {
+    "beforeOpeningRoundBrace": true
+  },
+  "disallowEmptyBlocks": true,
+  "disallowNewlineBeforeBlockStatements": true,
+  "requireSpaceBeforeBlockStatements": true,
+  "disallowSpaceAfterObjectKeys": true,
+  "requireSpacesInsideObjectBrackets": "allButNested",
+  "disallowSpacesInsideArrayBrackets": true,
+  "disallowSpacesInsideParentheses": true,
+  "requireCommaBeforeLineBreak": true,
+  "requireOperatorBeforeLineBreak": ["+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
+  "disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "~", "!"],
+  "disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
+  "disallowSpaceBeforeBinaryOperators": [","],
+  "requireSpaceBeforeBinaryOperators": ["?", "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<=", "&&", "||"],
+  "requireSpaceAfterBinaryOperators": [",", "?", "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<=", "&&", "||"],
+  "requireSpacesInConditionalExpression": {
+    "afterTest": true,
+    "beforeConsequent": true,
+    "afterConsequent": true,
+    "beforeAlternate": true
+  },
+  "validateIndentation": 4,
+  "disallowTrailingWhitespace": true,
+  "requireLineFeedAtFileEnd": true,
+  "safeContextKeyword": "bind",
+  "disallowMultipleLineStrings": true,
+  "requireDotNotation": true,
+  "disallowYodaConditions": true,
+  "disallowTrailingComma": true,
+  "requireCapitalizedConstructors": true,
+  "maximumLineLength": 200,
+  "validateQuoteMarks": { "mark": "'", "escape": true },
+  "requireCamelCaseOrUpperCaseIdentifiers": true
+}

@@ -1,0 +1,16 @@
+{
+  "name": "",
+  "version": "0.0.0",
+  "authors": [
+    "Philipp Wahala <philipp.wahala@gmail.com>"
+  ],
+  "private": true,
+  "dependencies": {
+    "marionette": "~2.4",
+    "jquery": "1.11.2",
+    "jquery-placeholder": "~2.1.1"
+  },
+  "resolutions": {
+    "jquery": "~1.11"
+  }
+}

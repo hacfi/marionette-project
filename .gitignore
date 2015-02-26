@@ -1,0 +1,6 @@
+/.tmp/
+/bower_components/
+/dist/*
+!/dist/.gitkeep
+/node_modules/
+/stats.*.json
