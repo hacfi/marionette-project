@@ -4,14 +4,7 @@
 
 var path = require('path'),
     gulp = require('gulp'),
-    $ = require('gulp-load-plugins')({
-        rename: {
-            'gulp-webpack': 'webpack'
-        }
-    }),
-    webpackConfig = require('./webpack.config.js'),
-    del = require('del');
-
+    $ = require('gulp-load-plugins')();
 
 gulp.task('default', ['dist']);
 
@@ -27,33 +20,79 @@ gulp.task('dev', ['webpack:dev', 'less:dev'], function () {
 
 // JavaScript // ---------------------------------------------------------------
 
-gulp.task('webpack', function () {
-    return gulp
-        .src(webpackConfig.entry.app)
-        .pipe($.webpack(webpackConfig, null, function(err, stats) {
-            //stats.compilation.hash;
-            require('fs').writeFileSync(
-                path.join(__dirname, 'stats.dist.json'),
-                JSON.stringify(stats.toJson(), null, '\t')
-            );
-        }))
-        .pipe($.size())
-        .pipe($.uglify())
-        .pipe(gulp.dest(webpackConfig.output.path))
-        .pipe($.size());
+var webpack = require('webpack'),
+    webpackConfig = require('./webpack.config.js');
+
+gulp.task("webpack", function (callback) {
+
+    webpackConfig.plugins.push(
+        new webpack.DefinePlugin({
+            DEBUG: false,
+            PRODUCTION: true
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: false,
+            compress: {
+                'hoist_funs': false,
+                loops: false,
+                unused: false
+            },
+            beautify: false,
+            output: {
+                comments: false
+            }
+        }),
+        function () {
+            this.plugin('done', function (stats) {
+                require('fs').writeFileSync(
+                    path.join(__dirname, 'stats.dist.json'),
+                    JSON.stringify(stats.toJson(), null, '\t')
+                );
+            });
+        }
+    );
+
+    webpack(webpackConfig, function (err, stats) {
+        if (err) {
+            throw new $.util.PluginError("webpack", err);
+        }
+
+        $.util.log("[webpack]", stats.toString({
+            // output options
+        }));
+
+        callback();
+    });
 });
 
-gulp.task('webpack:dev', function () {
-    return gulp
-        .src(webpackConfig.entry.app)
-        .pipe($.webpack(webpackConfig, null, function(err, stats) {
-            require('fs').writeFileSync(
-                path.join(__dirname, 'stats.dev.json'),
-                JSON.stringify(stats.toJson(), null, '\t')
-            );
-        }))
-        .pipe(gulp.dest(webpackConfig.output.path))
-        .pipe($.size());
+gulp.task("webpack:dev", function (callback) {
+
+    webpackConfig.plugins.push(
+        new webpack.DefinePlugin({
+            DEBUG: true,
+            PRODUCTION: false
+        }),
+        function () {
+            this.plugin('done', function (stats) {
+                require('fs').writeFileSync(
+                    path.join(__dirname, 'stats.dev.json'),
+                    JSON.stringify(stats.toJson(), null, '\t')
+                );
+            });
+        }
+    );
+
+    webpack(webpackConfig, function (err, stats) {
+        if (err) {
+            throw new $.util.PluginError("webpack", err);
+        }
+
+        $.util.log("[webpack]", stats.toString({
+            // output options
+        }));
+
+        callback();
+    });
 });
 
 
@@ -78,6 +117,7 @@ gulp.task('jshint', function () {
 var LessPluginAutoPrefix = require('less-plugin-autoprefix'),
     LessPluginCSScomb = require('less-plugin-csscomb'),
     LessPluginCleanCSS = require('less-plugin-clean-css'),
+    LessPluginCSSGrace = require('less-plugin-cssgrace'),
     autoprefix = new LessPluginAutoPrefix({
         browsers: [
             'Android 2.3',
@@ -91,7 +131,8 @@ var LessPluginAutoPrefix = require('less-plugin-autoprefix'),
         ]
     }),
     csscomb = new LessPluginCSScomb('.csscomb.json'),
-    cleancss = new LessPluginCleanCSS({ advanced: true });
+    cleancss = new LessPluginCleanCSS({ advanced: true }),
+    cssgrace = new LessPluginCSSGrace();
 
 gulp.task('less', function () {
     return gulp
@@ -108,6 +149,16 @@ gulp.task('less:dev', function () {
         .src('src/less/style.less')
         .pipe($.less({
             plugins: [autoprefix, csscomb]
+        }))
+        .pipe(gulp.dest('dist/css/'))
+        .pipe($.size());
+});
+
+gulp.task('less:dev2', function () {
+    return gulp
+        .src('src/less/style.less')
+        .pipe($.less({
+            plugins: [autoprefix, cssgrace, csscomb]
         }))
         .pipe(gulp.dest('dist/css/'))
         .pipe($.size());
@@ -143,6 +194,8 @@ gulp.task('less:lint', ['less:lint-unsorted', 'less:lint-sorted'], function () {
 
 
 // Misc // ---------------------------------------------------------------------
+
+var del = require('del');
 
 gulp.task('clean', ['clean:dist', 'clean:tmp']);
 
