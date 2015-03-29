@@ -131,7 +131,10 @@ var LessPluginAutoPrefix = require('less-plugin-autoprefix'),
         ]
     }),
     csscomb = new LessPluginCSScomb('.csscomb.json'),
-    cleancss = new LessPluginCleanCSS({ advanced: true }),
+    cleancss = new LessPluginCleanCSS({
+        advanced: true,
+        compatibility: 'ie8'
+    }),
     cssgrace = new LessPluginCSSGrace();
 
 gulp.task('less', function () {
